@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace XmlToXsdConverter
+namespace XmlToXsd
 {
     interface Element
     {
-            public String Name { get; set; }
-            public String Type { get; set; }
-            public int MinOccurs { get; set; }
-            public int MaxOccurs { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public int MinOccurs { get; set; }
+        public int MaxOccurs { get; set; }
     }
 }

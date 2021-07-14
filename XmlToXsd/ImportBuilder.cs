@@ -5,11 +5,11 @@ using System.Xml.Schema;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XmlToXsdConverter
+namespace XmlToXsd
 {
     class ImportBuilder
     {
-        public XmlSchemaImport buildImport(String schemaNamespace, String schemaLocation)
+        public XmlSchemaImport BuildImport(string schemaNamespace, string schemaLocation)
         {
             XmlSchemaImport newImport = new XmlSchemaImport();
             newImport.Namespace = schemaNamespace;

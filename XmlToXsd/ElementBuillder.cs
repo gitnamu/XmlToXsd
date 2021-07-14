@@ -6,12 +6,12 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace XmlToXsdConverter
+namespace XmlToXsd
 {
     class ElementBuillder
     {
         /** abstract element 생성 **/
-        public XmlSchemaElement buildAbstractElement(String name, String type, String substitutionGroup)
+        public XmlSchemaElement BuildAbstractElement(string name, string type, string substitutionGroup)
         {
             XmlSchemaElement newElement = new XmlSchemaElement();
             newElement.Name = name;
@@ -23,7 +23,7 @@ namespace XmlToXsdConverter
         }
 
         /** complexType의 sequence 내부의 element 생성 **/
-        public XmlSchemaElement buildSequenceElement(String name, String type, int minOccurs, int maxOccurs)
+        public XmlSchemaElement BuildSequenceElement(string name, string type, int minOccurs, int maxOccurs)
         {
             XmlSchemaElement newElement = new XmlSchemaElement();
             newElement.Name = name;

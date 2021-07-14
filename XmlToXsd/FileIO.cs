@@ -4,31 +4,31 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace XmlToXsdConverter
+namespace XmlToXsd
 {
     class FileIO
     {
         /** private 변수 **/
-        private String inputFileUrl { get; }
-        private String outputFileUrl { get; }
+        private string inputFilePath { get; }
+        private string outputFilePath { get; }
         
         /** 생성자 **/
-        public FileIO(String inputFileUrl, String outputFileUrl)
+        public FileIO(string inputFilePath, string outputFilePath)
         {
-            this.inputFileUrl = inputFileUrl;
-            this.outputFileUrl = outputFileUrl;
+            this.inputFilePath = inputFilePath;
+            this.outputFilePath = outputFilePath+"/testOutputFile.xsd";
         }
 
         /** input파일(xml) 불러오기 **/
-        public void loadIntputFile(XmlDocument inputFile)
+        public void LoadIntputFile(XmlDocument inputFile)
         {
-            inputFile.Load(inputFileUrl);
+            inputFile.Load(inputFilePath);
         }
 
         /** output파일(xsd) 저장하기 **/
-        public void saveOutputFile(XDocument outputFile)
+        public void SaveOutputFile(XDocument outputFile)
         {
-            outputFile.Save(outputFileUrl);
+            outputFile.Save(outputFilePath);
         }
     }
 }
