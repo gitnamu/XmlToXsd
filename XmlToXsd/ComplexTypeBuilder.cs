@@ -60,12 +60,12 @@ namespace XmlToXsd
         }
 
         /** sequence 태그 객체를 생성하고 그 안의 element 객체들을 생성하는 함수 **/
-        private XmlSchemaSequence MakeSequenceTag(Element[] elementList)
+        private XmlSchemaSequence MakeSequenceTag(List<Attribute> elementList)
         {
             XmlSchemaSequence sequence = new XmlSchemaSequence();
-            foreach(Element element in elementList)
+            foreach(Attribute element in elementList)
             {
-                XmlSchemaElement newElement = elementBuillder.BuildSequenceElement(element.Name, element.Type, element.MinOccurs, element.MaxOccurs);
+                XmlSchemaElement newElement = elementBuillder.BuildSequenceElement(element);
                 sequence.Items.Add(newElement);
             }
 
@@ -91,41 +91,46 @@ namespace XmlToXsd
             XmlSchemaComplexContent complexContent = MakeComplexContentTag();                   // complexContent 객체 생성
             complexType.ContentModel = complexContent;                                          // complexContent를 complexType과 연결
 
+            XmlSchemaComplexContentExtension extension = new XmlSchemaComplexContentExtension();// extesnsion 객체 생성
+            complexContent.Content = extension;                                                 // extension을 complexContent와 연결
+            extension.BaseTypeName = new XmlQualifiedName(extensionBaseUrl);
+
+
             return complexType;
         }
 
         /** complexContent가 없고 sequence는 있는 complexType을 생성하는 함수 **/
         /**	<!-- ComplexAttributeType (13) --> 에서 사용 됨 **/
-        public XmlSchemaComplexType BuildSequenceComplexType(string name, string documentationValue, Element[] elementList)
+        public XmlSchemaComplexType BuildSequenceComplexType(string name, string documentation, List<Attribute> attributeList)
         {
             XmlSchemaComplexType complexType = MakeComplexTypeTag(name);            // complexType 객체 생성
 
-            XmlSchemaAnnotation annotation = MakeAnnotationTag(documentationValue); // annotation 객체 생성
-            complexType.Annotation = annotation;                                    // annotation를 complexType과 연결
+            XmlSchemaAnnotation annotation = MakeAnnotationTag(documentation);      // annotation 객체 생성
+            complexType.Annotation = annotation;                                                    // annotation를 complexType과 연결
 
-            XmlSchemaSequence sequence = MakeSequenceTag(elementList);              // sequence 객체 생성
-            complexType.Particle = sequence;                                        // sequence를 complexType과 연결
+            XmlSchemaSequence sequence = MakeSequenceTag(attributeList);                // sequence 객체 생성
+            complexType.Particle = sequence;                                                        // sequence를 complexType과 연결
 
             return complexType;
         }
 
         /** complexContent와 sequence가 모두 있는 complexType을 생성하는 함수 **/
         /** <!-- infomationType (1) --> 와 <!-- FeatureType (6) --> 에서 사용 됨 **/
-        public XmlSchemaComplexType BuildComplexType(string name, string documentationValue, string extensionBaseUrl, Element[] elementList)
+        public XmlSchemaComplexType BuildComplexType(string name, string documentation, string baseName, List<Attribute> attributeList)
         {
             XmlSchemaComplexType complexType = MakeComplexTypeTag(name);                    // complexType 객체 생성
 
-            XmlSchemaAnnotation annotation = MakeAnnotationTag(documentationValue);         // annotation 객체 생성
-            complexType.Annotation = annotation;                                            // annotation를 complexType과 연결
+            XmlSchemaAnnotation annotation = MakeAnnotationTag(documentation);              // annotation 객체 생성
+            complexType.Annotation = annotation;                                                            // annotation를 complexType과 연결
 
-            XmlSchemaComplexContent complexContent = MakeComplexContentTag();               // complexContent 객체 생성
-            complexType.ContentModel = complexContent;                                      // complexContent를 complexType과 연결
+            XmlSchemaComplexContent complexContent = MakeComplexContentTag();                               // complexContent 객체 생성
+            complexType.ContentModel = complexContent;                                                      // complexContent를 complexType과 연결
 
-            XmlSchemaComplexContentExtension extension = MakeExtensionTag(extensionBaseUrl);// extension 객체 생성
-            complexContent.Content = extension;                                             // extension을 complexContent와 연결
+            XmlSchemaComplexContentExtension extension = MakeExtensionTag(baseName);        // extension 객체 생성
+            complexContent.Content = extension;                                                             // extension을 complexContent와 연결
 
-            XmlSchemaSequence sequence = MakeSequenceTag(elementList);                      // sequence 객체 생성
-            extension.Particle = sequence;                                                  // sequence를 complexType과 연결
+            XmlSchemaSequence sequence = MakeSequenceTag(attributeList);                        // sequence 객체 생성
+            extension.Particle = sequence;                                                                  // sequence를 complexType과 연결
 
             return complexType;
         }

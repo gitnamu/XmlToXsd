@@ -66,57 +66,70 @@ namespace XmlToXsd
         {
             // featureType 생성
             XmlSchemaElement featureElement = elementBuilder.BuildAbstractElement("FeatureType", "FeatureType", "gml:AbstractFeature");
-            schema.Includes.Add(featureElement);
+            schema.Items.Add(featureElement);
             XmlSchemaComplexType feautreComplexType = complexTypeBuilder.BuildAbstractComplexType("FeatureType", "Generalized feature type which carry all the common attributes", "S100:AbstractFeatureType");
-            schema.Includes.Add(feautreComplexType);
+            schema.Items.Add(feautreComplexType);
 
             // informationType 생성
             XmlSchemaElement informationElement = elementBuilder.BuildAbstractElement("InformationType", "InformationType", "gml:AbstractGML");
-            schema.Includes.Add(informationElement);
+            schema.Items.Add(informationElement);
             XmlSchemaComplexType informationComplexType = complexTypeBuilder.BuildAbstractComplexType("InformationType", "Generalized information type which carry all the common attributes", "S100:AbstractInformationType");
-            schema.Includes.Add(informationComplexType);
+            schema.Items.Add(informationComplexType);
         }
 
         /** <!-- Enumeration(8) --> 부분 **/
-        private void BuildEnumerationPart(List<EnumerationOfS100_FC_SimpleAttribute> enumerationList)
+        private void BuildEnumerationPart(List<Enumeration> enumerationList)
         {
-            foreach(EnumerationOfS100_FC_SimpleAttribute enumeration in enumerationList)
+            foreach(Enumeration enumeration in enumerationList)
             {
                 XmlSchemaSimpleType simpleType = simpleTypeBuilder.BuildSimpleType(enumeration);
-                schema.Includes.Add(simpleType);
+                schema.Items.Add(simpleType);
             }
         }
 
         /** <!-- ComplexAttributeType(13) --> 부분 **/
         private void BuildComplexAttributeTypePart()
         {
-
+            List<S100_FC_ComplexAttribute> complexAttributeList = inputFileReader.GetS100_FC_ComplexAttribute();
+            foreach(S100_FC_ComplexAttribute complexAttribute in complexAttributeList)
+            {
+                XmlSchemaComplexType complexType = complexTypeBuilder.BuildSequenceComplexType(complexAttribute.name, complexAttribute.documentation, complexAttribute.attribute);
+                schema.Items.Add(complexType);
+            }
         }
 
         /** <!-- infomationType (1) --> 부분 **/
         private void BuildInfomationTypePart()
         {
-
+            S100_FC_InformationType informationType = inputFileReader.GetS100_FC_InformationType();
+            XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(informationType.name, informationType.documentation, informationType.baseName, informationType.attribute);
+            schema.Items.Add(complexType);
         }
 
         /** <!-- FeatureType (6) --> 부분 **/
         private void BuildFeatureTypePart()
         {
-
+            S100_FC_FeatureType featureType = inputFileReader.GetS100_FC_FeatureType();
+            XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(featureType.name, featureType.documentation, featureType.baseName, featureType.attribute);
+            schema.Items.Add(complexType);
         }
 
         /** 전체 output 파일 생성 **/
         public XDocument BuildOutputFile()
         {
-            XDocument outputFile = MatchSchemaToXsd();
+            //XDocument outputFile = MatchSchemaToXsd();
             BuildFilePart();
             BuildTypePart();
-            BuildEnumerationPart(inputFileReader.GetEnumerationOfS100_FC_SimpleAttribute());
+            BuildEnumerationPart(inputFileReader.GetEnumeration());
             BuildComplexAttributeTypePart();
             BuildInfomationTypePart();
             BuildFeatureTypePart();
 
-            return outputFile;
+            StringWriter schemaWriter = new StringWriter();
+            schema.Write(schemaWriter);
+            XDocument xsdDoc = XDocument.Parse(schemaWriter.ToString());
+
+            return xsdDoc;
         }
     }
 }

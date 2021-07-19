@@ -23,15 +23,23 @@ namespace XmlToXsd
         }
 
         /** complexType의 sequence 내부의 element 생성 **/
-        public XmlSchemaElement BuildSequenceElement(string name, string type, int minOccurs, int maxOccurs)
+        public XmlSchemaElement BuildSequenceElement(Attribute attribute)
         {
             XmlSchemaElement newElement = new XmlSchemaElement();
-            newElement.Name = name;
-            newElement.SchemaTypeName = new XmlQualifiedName(type, "http://www.w3.org/2001/XMLSchema");
-            if(minOccurs != 1 || maxOccurs != 1)
+            newElement.Name = attribute.attributeName;
+            newElement.SchemaTypeName = new XmlQualifiedName(attribute.valueType, "http://www.w3.org/2001/XMLSchema");
+            if(attribute.lower != 1 || attribute.upper != 1)
             {
-                newElement.MinOccurs = minOccurs;
-                newElement.MaxOccurs = maxOccurs;
+                newElement.MinOccurs = attribute.lower;
+
+                if(attribute.infinite == true)
+                {
+                    newElement.MaxOccursString = "unbounded";
+                }
+                else
+                {
+                    newElement.MaxOccurs = attribute.upper;
+                }
             }
 
             return newElement;

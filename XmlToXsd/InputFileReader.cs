@@ -56,14 +56,35 @@ namespace XmlToXsd
             XmlNodeList informationTypeNode = inputFile.GetElementsByTagName("S100FC:S100_FC_InformationType"); // <S100FC:S100_FC_InformationType> 리스트
             XmlNode code = informationTypeNode[0].SelectSingleNode("S100FC:code", nmspc);                       // <S100FC:code>
             informationType.name = code.InnerText;                                                              // <S100FC:code>의 innerText 추출
+            informationType.documentation = "none";
+            informationType.baseName = "InformationType";
+            List<S100_FC_SimpleAttribute> simpleAttributeList = GetS100_FC_SimpleAttribute();
 
             XmlNodeList attributeBindingList = informationTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
 
             List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);    // <S100FC:attributeBinding> 개수 크기의 리스트 생성
 
-            foreach (XmlNode attributeBinding in attributeBindingList)
+            for(int i = 0; i < attributeBindingList.Count; i++)
             {
-                attributeList.Add(GetAttribute(attributeBinding));   // attribute를 리스트에 추가
+                Attribute attribute = GetAttribute(attributeBindingList[i]);
+
+                string valueType = simpleAttributeList[i].valueType;
+                switch (valueType)
+                {
+                    case "text":
+                        attribute.valueType = "string";
+                        break;
+                    case "integer":
+                        attribute.valueType = "int";
+                        break;
+                    case "date":
+                        attribute.valueType = "date";
+                        break;
+                    default:
+                        break;
+                }
+                attributeList.Add(attribute);   // attribute를 리스트에 추가
+                
             }
             informationType.attribute = attributeList;  // 구한 attributeList를 informationType의 attribute에 할당
 
@@ -75,20 +96,57 @@ namespace XmlToXsd
         {
             S100_FC_FeatureType featureType = new S100_FC_FeatureType();
 
+            XmlNodeList featureTypeNode = inputFile.GetElementsByTagName("S100FC:S100_FC_FeatureType"); // <S100FC:S100_FC_FeatureType>
+            XmlNode code = featureTypeNode[0].SelectSingleNode("S100FC:code", nmspc);                       // <S100FC:code>
+            featureType.name = code.InnerText;                                                              // <S100FC:code>의 innerText 추출
+            featureType.documentation = "none";
+            featureType.baseName = "FeatureType";
+
+            XmlNodeList attributeBindingList = featureTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
+
+            List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);    // <S100FC:attributeBinding> 개수 크기의 리스트 생성
+
+            foreach (XmlNode attributeBinding in attributeBindingList)
+            {
+                Attribute attribute = new Attribute();
+                attributeList.Add(GetAttribute(attributeBinding));   // attribute를 리스트에 추가
+
+            }
+            featureType.attribute = attributeList;  // 구한 attributeList를 featureType의 attribute에 할당
 
             return featureType;
         }
 
+        public List<S100_FC_SimpleAttribute> GetS100_FC_SimpleAttribute()
+        {
+            List<S100_FC_SimpleAttribute> simpleAttributeList = new List<S100_FC_SimpleAttribute>();
+            XmlNodeList simpleAttributeNodeList = inputFile.GetElementsByTagName("S100FC:S100_FC_SimpleAttribute");
+
+            foreach (XmlNode simpleAttributeNode in simpleAttributeNodeList)
+            {
+                S100_FC_SimpleAttribute simpleAttribute = new S100_FC_SimpleAttribute();
+                XmlNode code = simpleAttributeNode.SelectSingleNode("S100FC:code", nmspc);
+                simpleAttribute.name = code.InnerText;
+
+                XmlNode valueType = simpleAttributeNode.SelectSingleNode("S100FC:valueType", nmspc);
+                simpleAttribute.valueType = valueType.InnerText;
+
+                simpleAttributeList.Add(simpleAttribute);
+            }
+
+            return simpleAttributeList;
+        }
 
         /** S100_FC_SimpleAttribute의 enumeration을 읽어서 구조체 형태로 반환 **/
-        public List<EnumerationOfS100_FC_SimpleAttribute> GetEnumerationOfS100_FC_SimpleAttribute()
+        public List<Enumeration> GetEnumeration()
         {
-            List<EnumerationOfS100_FC_SimpleAttribute> enumerationList = new List<EnumerationOfS100_FC_SimpleAttribute>();
+            List<Enumeration> enumerationList = new List<Enumeration>();
 
             XmlNodeList simpleAttributeNodeList = inputFile.GetElementsByTagName("S100FC:S100_FC_SimpleAttribute");
             foreach (XmlNode simpleAttributeNode in simpleAttributeNodeList)
             {
-                EnumerationOfS100_FC_SimpleAttribute enumeration = new EnumerationOfS100_FC_SimpleAttribute();
+                Enumeration enumeration = new Enumeration();
+                enumeration.restrictionBase = "string";
 
                 XmlNode valueType = simpleAttributeNode.SelectSingleNode("S100FC:valueType", nmspc);
                 if (valueType.InnerText != "enumeration")
@@ -97,7 +155,7 @@ namespace XmlToXsd
                 }
 
                 XmlNode code = simpleAttributeNode.SelectSingleNode("S100FC:code", nmspc);
-                enumeration.name = code.InnerText;
+                enumeration.name = code.InnerText + "Type";
                 XmlNode listedValuesNode = simpleAttributeNode.SelectSingleNode("S100FC:listedValues", nmspc);
                 XmlNodeList listedValueList = listedValuesNode.SelectNodes("S100FC:listedValue", nmspc);
 
@@ -127,7 +185,8 @@ namespace XmlToXsd
                 S100_FC_ComplexAttribute complexAttribute = new S100_FC_ComplexAttribute();
 
                 XmlNode code = complexAttributeNode.SelectSingleNode("S100FC:code", nmspc);
-                complexAttribute.name = code.InnerText;
+                complexAttribute.name = code.InnerText + "Type";
+                complexAttribute.documentation = "none";
 
                 List<Attribute> attributeList = new List<Attribute>();
 
@@ -151,26 +210,39 @@ namespace XmlToXsd
         public int upper { get; set; }
         public bool nil { get; set; }
         public bool infinite { get; set; }
+        public string valueType { get; set; }
     }
 
     public sealed class S100_FC_InformationType
     {
         public string name { get; set; }
+        public string documentation { get; set; }
+        public string baseName { get; set; }
         public List<Attribute> attribute { get; set; }
     }
 
     public sealed class S100_FC_FeatureType
     {
         public string name { get; set; }
+        public string documentation { get; set; }
+        public string baseName { get; set; }
+        public List<Attribute> attribute { get; set; }
+    }
+
+    public sealed class S100_FC_SimpleAttribute
+    {
+        public string name { get; set; }
+        public string valueType { get; set; }
     }
 
     public sealed class S100_FC_ComplexAttribute
     {
         public string name { get; set; }
+        public string documentation { get; set; }
         public List<Attribute> attribute { get; set; }
     }
 
-    public sealed class EnumerationOfS100_FC_SimpleAttribute
+    public sealed class Enumeration
     {
         public string name { get; set; }
         public string restrictionBase { get; set; }

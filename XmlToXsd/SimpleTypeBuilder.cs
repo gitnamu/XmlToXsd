@@ -38,7 +38,7 @@ namespace XmlToXsd
 
         /** simpleType 빌드하는 함수 **/
         /** <!-- Enumeration (8) --> 에서 사용됨 **/
-        public XmlSchemaSimpleType BuildSimpleType(EnumerationOfS100_FC_SimpleAttribute enumeration)
+        public XmlSchemaSimpleType BuildSimpleType(Enumeration enumeration)
         {
             XmlSchemaSimpleType simpleTypeTag = MakeSimpleTypeTag(enumeration.name);
             XmlSchemaSimpleTypeRestriction restrictionTag = MakeRestrictionTag(enumeration.restrictionBase);
