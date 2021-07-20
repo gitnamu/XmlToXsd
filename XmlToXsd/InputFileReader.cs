@@ -109,11 +109,10 @@ namespace XmlToXsd
             featureType.name = code.InnerText;                                                              // <S100FC:code>의 innerText 추출
 
             XmlNodeList attributeBindingList = featureTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
-            List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);    // <S100FC:attributeBinding> 개수 크기의 리스트 생성
+            List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);                        // <S100FC:attributeBinding> 개수 크기의 리스트 생성
 
             foreach (XmlNode attributeBinding in attributeBindingList)
             {
-                Attribute attribute = new Attribute();
                 attributeList.Add(GetAttribute(attributeBinding));   // attribute의 필요한 정보(이름 및 multiplicity)를 가져와 리스트에 추가
             }
             featureType.attribute = attributeList;  // 구한 attributeList를 featureType의 attribute에 할당
@@ -154,10 +153,7 @@ namespace XmlToXsd
                 enumeration.restrictionBase = "string";
 
                 XmlNode valueType = simpleAttributeNode.SelectSingleNode("S100FC:valueType", nmspc);
-                if (valueType.InnerText != "enumeration")
-                {
-                    continue;
-                }
+                if (valueType.InnerText != "enumeration") continue;
 
                 XmlNode code = simpleAttributeNode.SelectSingleNode("S100FC:code", nmspc);
                 enumeration.name = code.InnerText + "Type";
