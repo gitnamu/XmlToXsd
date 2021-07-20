@@ -71,7 +71,15 @@ namespace XmlToXsd
             }
 
             Converter converter = new Converter(inputFilePath, outputFilePath);
-            converter.Convert();
+            bool result = converter.Convert();
+            if (result)
+            {
+                MessageBox.Show("정상적으로 변환이 완료되었습니다.");
+            }
+            else
+            {
+                MessageBox.Show("오류가 발생하였습니다.");
+            }
         }
     }
 }

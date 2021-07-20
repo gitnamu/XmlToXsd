@@ -20,26 +20,31 @@ namespace XmlToXsd
 
         public bool Convert()
         {
-            if(this.inputFilePath == null || this.outputFilePath == null)
+            try
+            {
+                /** FileIO 객체 생성 **/
+                FileIO fileIO = new FileIO(inputFilePath, outputFilePath);
+
+                /** xml파일 읽기 **/
+                XmlDocument inputFile = new XmlDocument();
+                fileIO.LoadIntputFile(inputFile);
+
+                /** OutputFileBuilder 객체 생성 및 변환 실행 **/
+                OutputFileBuilder outputFileBuilder = new OutputFileBuilder(inputFile);
+                XDocument outputFile = outputFileBuilder.BuildOutputFile();
+
+                /** 변환한 xsd파일 저장**/
+                fileIO.SaveOutputFile(outputFile);
+
+                return true;
+            }
+            catch(Exception e)
             {
                 return false;
             }
+            
 
-            /** FileIO 객체 생성 **/
-            FileIO fileIO = new FileIO(inputFilePath, outputFilePath);
-
-            /** xml파일 읽기 **/
-            XmlDocument inputFile = new XmlDocument();
-            fileIO.LoadIntputFile(inputFile);
-
-            /** OutputFileBuilder 객체 생성 및 변환 실행 **/
-            OutputFileBuilder outputFileBuilder = new OutputFileBuilder(inputFile);
-            XDocument outputFile = outputFileBuilder.BuildOutputFile();
-
-            /** 변환한 xsd파일 저장**/
-            fileIO.SaveOutputFile(outputFile);
-
-            return true;
+            
         }
     }
 }

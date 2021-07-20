@@ -11,20 +11,19 @@ namespace XmlToXsd
         private XmlDocument inputFile { get; }
         private XmlNamespaceManager nmspc { get; }
 
-        /** 생성자 **/
-        /** namespace 생성 **/
-        public InputFileReader(XmlDocument inputFile)
+        private string getValueType(string valueType)
         {
-            this.inputFile = inputFile;
-
-            nmspc = new XmlNamespaceManager(inputFile.NameTable);
-            nmspc.AddNamespace("S100FC", "http://www.iho.int/S100FC");
-            nmspc.AddNamespace("S100Base", "http://www.iho.int/S100Base");
-            nmspc.AddNamespace("S100CI", "http://www.iho.int/S100CI");
-            nmspc.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
-            nmspc.AddNamespace("S100FD", "http://www.iho.int/S100FD");
-            nmspc.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-            nmspc.AddNamespace("schemaLocation", "http://www.iho.int/S100FC S100FC.xsd");
+            switch (valueType)
+            {
+                case "text":
+                    return "string";
+                case "integer":
+                    return "int";
+                case "date":
+                    return "date";
+                default:
+                    return null;
+            }
         }
 
         private Attribute GetAttribute(XmlNode attributeBinding)
@@ -47,6 +46,21 @@ namespace XmlToXsd
             return attribute;
         }
 
+        /** 생성자 **/
+        /** namespace 생성 **/
+        public InputFileReader(XmlDocument inputFile)
+        {
+            this.inputFile = inputFile;
+
+            nmspc = new XmlNamespaceManager(inputFile.NameTable);
+            nmspc.AddNamespace("S100FC", "http://www.iho.int/S100FC");
+            nmspc.AddNamespace("S100Base", "http://www.iho.int/S100Base");
+            nmspc.AddNamespace("S100CI", "http://www.iho.int/S100CI");
+            nmspc.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
+            nmspc.AddNamespace("S100FD", "http://www.iho.int/S100FD");
+            nmspc.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            nmspc.AddNamespace("schemaLocation", "http://www.iho.int/S100FC S100FC.xsd");
+        }
 
         /** S100_FC_InformationType 읽어서 구조체 형태로 반환 **/
         public S100_FC_InformationType GetS100_FC_InformationType()
@@ -69,20 +83,8 @@ namespace XmlToXsd
                 Attribute attribute = GetAttribute(attributeBindingList[i]);
 
                 string valueType = simpleAttributeList[i].valueType;
-                switch (valueType)
-                {
-                    case "text":
-                        attribute.valueType = "string";
-                        break;
-                    case "integer":
-                        attribute.valueType = "int";
-                        break;
-                    case "date":
-                        attribute.valueType = "date";
-                        break;
-                    default:
-                        break;
-                }
+                attribute.valueType = getValueType(valueType);
+
                 attributeList.Add(attribute);   // attribute를 리스트에 추가
                 
             }

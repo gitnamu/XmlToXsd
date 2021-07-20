@@ -12,7 +12,7 @@
             <ColumnDefinition Width="519*"/>
         </Grid.ColumnDefinitions>
         <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="380" Margin="5,5,0,0" VerticalAlignment="Top" Width="257">
-            <TextBox Name="testOutputBox" HorizontalAlignment="Left" Height="174" Margin="29,32,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="170"/>
+            <TextBlock Name="testOutputBox" HorizontalAlignment="Left" Height="174" Margin="29,32,0,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" Width="170"/>
         </Border>
         <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" HorizontalAlignment="Left" Height="76" Margin="20,25,0,0" VerticalAlignment="Top" Width="459">
             <Button Content="파일찾기" Name="inputFileBtn" Click="FindInputFile" HorizontalAlignment="Left" Height="25" Margin="386,0,0,0" VerticalAlignment="Center" Width="62" />
@@ -20,8 +20,8 @@
         <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" HorizontalAlignment="Left" Height="76" Margin="20,0,0,0" VerticalAlignment="Center" Width="459">
             <Button Content="파일찾기" Name="outputFileBtn" Click="FindOutputFolder" HorizontalAlignment="Left" Height="24" Margin="381,0,0,0" VerticalAlignment="Center" Width="67"/>
         </Border>
-        <TextBox Name="inputFilePathBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="44,54,0,0" Text="입력 파일 : " TextWrapping="Wrap" VerticalAlignment="Top" Width="336"/>
-        <TextBox Name="outputFilePathBox" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="44,0,0,0" Text="출력 경로 : " TextWrapping="Wrap" VerticalAlignment="Center" Width="336"/>
+        <TextBlock Name="inputFilePathBox" Grid.Column="1" HorizontalAlignment="Left" Height="41" Margin="44,43,0,0" Text="입력 파일 : " TextWrapping="Wrap" VerticalAlignment="Top" Width="336"/>
+        <TextBlock Name="outputFilePathBox" Grid.Column="1" HorizontalAlignment="Left" Height="41" Margin="44,0,0,0" Text="출력 경로 : " TextWrapping="Wrap" VerticalAlignment="Center" Width="336"/>
         <Button Content="변환하기" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="195,261,0,0" VerticalAlignment="Top" Width="105" Click="ConvertFile"/>
         <ProgressBar Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="20,328,0,0" VerticalAlignment="Top" Width="459"/>
 
