@@ -52,13 +52,14 @@ namespace XmlToXsd
         /** 출력할 xsd 파일의 경로 선택하기 버튼 눌렀을 때 동작 **/
         private void FindOutputFolder(object sender, RoutedEventArgs e)
         {
-            CommonOpenFileDialog commonOpenDlg = new CommonOpenFileDialog();
-            commonOpenDlg.IsFolderPicker = true;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XSD file (*.xsd)|*.xsd";
 
-            if(commonOpenDlg.ShowDialog() == CommonFileDialogResult.Ok)
+            if (saveFileDialog.ShowDialog() == true)
             {
-                outputFilePathBox.Text = commonOpenDlg.FileName;
-                this.outputFilePath = commonOpenDlg.FileName;
+                File.WriteAllText(saveFileDialog.FileName,"");
+                outputFilePathBox.Text = saveFileDialog.FileName;
+                this.outputFilePath = saveFileDialog.FileName;
             }
         }
 

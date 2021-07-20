@@ -11,12 +11,12 @@ namespace XmlToXsd
         /** private 변수 **/
         private string inputFilePath { get; }
         private string outputFilePath { get; }
-
+        
         /** 생성자 **/
         public FileIO(string inputFilePath, string outputFilePath)
         {
             this.inputFilePath = inputFilePath;
-            this.outputFilePath = outputFilePath + "/testOutputFile.xsd";
+            this.outputFilePath = outputFilePath;
         }
 
         /** input파일(xml) 불러오기 **/
