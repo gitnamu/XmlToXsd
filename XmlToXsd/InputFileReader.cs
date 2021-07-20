@@ -8,10 +8,12 @@ namespace XmlToXsd
 {
     class InputFileReader
     {
-        private XmlDocument inputFile { get; }
-        private XmlNamespaceManager nmspc { get; }
+        private XmlDocument inputFile { get; }      // 입력받은 xml 파일
+        private XmlNamespaceManager nmspc { get; }  // namespace
 
-        private string getValueType(string valueType)
+        /** valueType 반환 **/
+        /** text는 string, integer는 int, date는 date로 변환 **/
+        private string ConvertValueType(string valueType)
         {
             switch (valueType)
             {
@@ -26,6 +28,8 @@ namespace XmlToXsd
             }
         }
 
+        /** attribute 반환 **/
+        /** <S100FC:multiplicity>의 upper, lower, nil, infinite 반환 **/
         private Attribute GetAttribute(XmlNode attributeBinding)
         {
             Attribute attribute = new Attribute();
@@ -52,6 +56,7 @@ namespace XmlToXsd
         {
             this.inputFile = inputFile;
 
+            // namespace 추가
             nmspc = new XmlNamespaceManager(inputFile.NameTable);
             nmspc.AddNamespace("S100FC", "http://www.iho.int/S100FC");
             nmspc.AddNamespace("S100Base", "http://www.iho.int/S100Base");
@@ -62,63 +67,61 @@ namespace XmlToXsd
             nmspc.AddNamespace("schemaLocation", "http://www.iho.int/S100FC S100FC.xsd");
         }
 
-        /** S100_FC_InformationType 읽어서 구조체 형태로 반환 **/
+        /** S100_FC_InformationType 읽어서 필요한 정보 반환 **/
         public S100_FC_InformationType GetS100_FC_InformationType()
         {
             S100_FC_InformationType informationType = new S100_FC_InformationType();
+            informationType.documentation = "none";         // documentation은 default가 none
+            informationType.baseName = "InformationType";   // baseName의 default는 InformationType
 
             XmlNodeList informationTypeNode = inputFile.GetElementsByTagName("S100FC:S100_FC_InformationType"); // <S100FC:S100_FC_InformationType> 리스트
-            XmlNode code = informationTypeNode[0].SelectSingleNode("S100FC:code", nmspc);                       // <S100FC:code>
-            informationType.name = code.InnerText;                                                              // <S100FC:code>의 innerText 추출
-            informationType.documentation = "none";
-            informationType.baseName = "InformationType";
-            List<S100_FC_SimpleAttribute> simpleAttributeList = GetS100_FC_SimpleAttribute();
+            informationType.name = informationTypeNode[0].SelectSingleNode("S100FC:code", nmspc).InnerText;     // <S100FC:code> innerText를 name으로 설정
 
             XmlNodeList attributeBindingList = informationTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
 
-            List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);    // <S100FC:attributeBinding> 개수 크기의 리스트 생성
+            List<Attribute> attributeList = new List<Attribute>();    // Attribute 리스트 생성
 
-            for(int i = 0; i < attributeBindingList.Count; i++)
+            List<S100_FC_SimpleAttribute> simpleAttributeList = GetS100_FC_SimpleAttribute();       // simpleAttribute 리스트 가져옴
+
+            for (int i = 0; i < attributeBindingList.Count; i++)
             {
-                Attribute attribute = GetAttribute(attributeBindingList[i]);
+                Attribute attribute = GetAttribute(attributeBindingList[i]);    // attributeBinding의 이름 및 multiplicity정보를 가져옴
 
-                string valueType = simpleAttributeList[i].valueType;
-                attribute.valueType = getValueType(valueType);
+                string valueType = simpleAttributeList[i].valueType;            // attribute와 동일한 이름을 갖는 simpleAttribute의 valueType을 가져옴
+                attribute.valueType = ConvertValueType(valueType);              // simpleAttribute의 valueType을 attribute의 valueType으로 설정
 
                 attributeList.Add(attribute);   // attribute를 리스트에 추가
-                
             }
             informationType.attribute = attributeList;  // 구한 attributeList를 informationType의 attribute에 할당
 
             return informationType;
         }
 
-
+        /** S100_FC_FeatureType 읽어서 필요한 정보 반환 **/
         public S100_FC_FeatureType GetS100_FC_FeatureType()
         {
             S100_FC_FeatureType featureType = new S100_FC_FeatureType();
+            featureType.documentation = "none";     // featureType의 default documentation은 none
+            featureType.baseName = "FeatureType";   // featureType의 default baseName은 FeatureType
 
-            XmlNodeList featureTypeNode = inputFile.GetElementsByTagName("S100FC:S100_FC_FeatureType"); // <S100FC:S100_FC_FeatureType>
+            XmlNodeList featureTypeNode = inputFile.GetElementsByTagName("S100FC:S100_FC_FeatureType");     // <S100FC:S100_FC_FeatureType>
             XmlNode code = featureTypeNode[0].SelectSingleNode("S100FC:code", nmspc);                       // <S100FC:code>
             featureType.name = code.InnerText;                                                              // <S100FC:code>의 innerText 추출
-            featureType.documentation = "none";
-            featureType.baseName = "FeatureType";
 
             XmlNodeList attributeBindingList = featureTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
-
             List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);    // <S100FC:attributeBinding> 개수 크기의 리스트 생성
 
             foreach (XmlNode attributeBinding in attributeBindingList)
             {
                 Attribute attribute = new Attribute();
-                attributeList.Add(GetAttribute(attributeBinding));   // attribute를 리스트에 추가
-
+                attributeList.Add(GetAttribute(attributeBinding));   // attribute의 필요한 정보(이름 및 multiplicity)를 가져와 리스트에 추가
             }
             featureType.attribute = attributeList;  // 구한 attributeList를 featureType의 attribute에 할당
 
             return featureType;
         }
 
+        /** S100_FC_SimpleAttribute 읽어서 필요한 정보 반환 **/
         public List<S100_FC_SimpleAttribute> GetS100_FC_SimpleAttribute()
         {
             List<S100_FC_SimpleAttribute> simpleAttributeList = new List<S100_FC_SimpleAttribute>();
@@ -139,7 +142,7 @@ namespace XmlToXsd
             return simpleAttributeList;
         }
 
-        /** S100_FC_SimpleAttribute의 enumeration을 읽어서 구조체 형태로 반환 **/
+        /** S100_FC_SimpleAttribute의 enumeration을 읽어서 팔요한 정보 반환 **/
         public List<Enumeration> GetEnumeration()
         {
             List<Enumeration> enumerationList = new List<Enumeration>();
@@ -176,7 +179,7 @@ namespace XmlToXsd
         }
 
 
-        /** S100_FC_ComplexAttribute의 enumeration을 읽어서 구조체 형태로 반환 **/
+        /** S100_FC_ComplexAttribute의 enumeration을 읽어서 필요한 정보 반환 **/
         public List<S100_FC_ComplexAttribute> GetS100_FC_ComplexAttribute()
         {
             List<S100_FC_ComplexAttribute> complexAttributeList = new List<S100_FC_ComplexAttribute>();

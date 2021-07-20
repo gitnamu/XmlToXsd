@@ -12,6 +12,7 @@ namespace XmlToXsd
     class OutputFileBuilder
     {
         /** private 변수 **/
+        /** schema 및 각 빌더 **/
         private XmlSchema schema { get; }
         private ElementBuillder elementBuilder { get; }
         private ComplexTypeBuilder complexTypeBuilder { get; }
@@ -21,7 +22,7 @@ namespace XmlToXsd
 
         /** 생성자 **/
         /** schema 생성 및 ElementBuiler, ComplexTypeBuilder, SimpleTypeBuilder 객체 생성   **/
-        public OutputFileBuilder(XmlDocument inputFile) 
+        public OutputFileBuilder(XmlDocument inputFile)
         {
             // schema 객체 생성 및 namespace 추가
             schema = new XmlSchema();
@@ -52,7 +53,7 @@ namespace XmlToXsd
         }
 
         /** <!-- file --> 부분 **/
-        /** importBuilder객체의 buildImport 함수를 호출하여 import 요소들 생성 및 schema에 연결 **/
+        /** importBuilder객체의 buildImport 함수를 호출하여 <import> 생성 및 <schema>에 연결 **/
         private void BuildFilePart()
         {
             schema.Includes.Add(importBuilder.BuildImport("http://www.iho.int/s100gml/1.0", "s100gmlbase.xsd"));
@@ -61,7 +62,7 @@ namespace XmlToXsd
             schema.Includes.Add(importBuilder.BuildImport("http://www.iho.int/s100gml/1.0+EXT", "s100gmlbaseExt.xsd"));
         }
 
-        /** <!-- type --> 부분 **/
+        /** <!-- Type --> 부분 **/
         private void BuildTypePart()
         {
             // featureType 생성
@@ -75,12 +76,22 @@ namespace XmlToXsd
             schema.Items.Add(informationElement);
             XmlSchemaComplexType informationComplexType = complexTypeBuilder.BuildAbstractComplexType("InformationType", "Generalized information type which carry all the common attributes", "S100:AbstractInformationType");
             schema.Items.Add(informationComplexType);
+
+            // SimpleType ISO639-3 생성
+            XmlSchemaSimpleType simpleType = simpleTypeBuilder.BuildSimpleTypeOfType("ISO639-3", "stub for ISO 639-3 language codes", "xs:string", @"\w{3}");
+            schema.Items.Add(simpleType);
+
+            // complexType GM_Point 생성
+            XmlSchemaComplexType complexType = complexTypeBuilder.BuildChoiceComplexType("GM_Point", "S100:pointProperty");
+            schema.Items.Add(complexType);
         }
 
         /** <!-- Enumeration(8) --> 부분 **/
-        private void BuildEnumerationPart(List<Enumeration> enumerationList)
+        private void BuildEnumerationPart()
         {
-            foreach(Enumeration enumeration in enumerationList)
+            List<Enumeration> enumerationList = inputFileReader.GetEnumeration();
+
+            foreach (Enumeration enumeration in enumerationList)
             {
                 XmlSchemaSimpleType simpleType = simpleTypeBuilder.BuildSimpleType(enumeration);
                 schema.Items.Add(simpleType);
@@ -117,19 +128,14 @@ namespace XmlToXsd
         /** 전체 output 파일 생성 **/
         public XDocument BuildOutputFile()
         {
-            //XDocument outputFile = MatchSchemaToXsd();
             BuildFilePart();
             BuildTypePart();
-            BuildEnumerationPart(inputFileReader.GetEnumeration());
+            BuildEnumerationPart();
             BuildComplexAttributeTypePart();
             BuildInfomationTypePart();
             BuildFeatureTypePart();
 
-            StringWriter schemaWriter = new StringWriter();
-            schema.Write(schemaWriter);
-            XDocument xsdDoc = XDocument.Parse(schemaWriter.ToString());
-
-            return xsdDoc;
+            return MatchSchemaToXsd();
         }
     }
 }
