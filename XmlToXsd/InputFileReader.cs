@@ -208,7 +208,7 @@ namespace XmlToXsd
     }
 
 
-    public sealed class Attribute
+    public struct Attribute
     {
         public string attributeName { get; set; }
         public int lower { get; set; }
@@ -218,7 +218,7 @@ namespace XmlToXsd
         public string valueType { get; set; }
     }
 
-    public sealed class S100_FC_InformationType
+    public struct S100_FC_InformationType
     {
         public string name { get; set; }
         public string documentation { get; set; }
@@ -226,7 +226,7 @@ namespace XmlToXsd
         public List<Attribute> attribute { get; set; }
     }
 
-    public sealed class S100_FC_FeatureType
+    public struct S100_FC_FeatureType
     {
         public string name { get; set; }
         public string documentation { get; set; }
@@ -234,20 +234,20 @@ namespace XmlToXsd
         public List<Attribute> attribute { get; set; }
     }
 
-    public sealed class S100_FC_SimpleAttribute
+    public struct S100_FC_SimpleAttribute
     {
         public string name { get; set; }
         public string valueType { get; set; }
     }
 
-    public sealed class S100_FC_ComplexAttribute
+    public struct S100_FC_ComplexAttribute
     {
         public string name { get; set; }
         public string documentation { get; set; }
         public List<Attribute> attribute { get; set; }
     }
 
-    public sealed class Enumeration
+    public struct Enumeration
     {
         public string name { get; set; }
         public string restrictionBase { get; set; }
