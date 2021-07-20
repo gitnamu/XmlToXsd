@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
-using System.Xml.Serialization;
+﻿using System.Collections.Generic;
 using System.Xml.Schema;
-using System.IO;
-using System.Text;
 using System.Xml;
-using System.Linq;
 
 namespace XmlToXsd
 {
