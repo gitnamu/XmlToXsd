@@ -16,11 +16,11 @@ namespace XmlToXsd
             switch (valueType)
             {
                 case "text":
-                    return "string";
+                    return "xs:string";
                 case "integer":
-                    return "int";
+                    return "xs:int";
                 case "date":
-                    return "date";
+                    return "xs:date";
                 default:
                     return null;
             }
@@ -80,13 +80,17 @@ namespace XmlToXsd
             List<Attribute> attributeList = new List<Attribute>();    // Attribute 리스트 생성
 
             List<S100_FC_SimpleAttribute> simpleAttributeList = GetS100_FC_SimpleAttribute();       // simpleAttribute 리스트 가져옴
+            List<S100_FC_ComplexAttribute> complexAttributeList = GetS100_FC_ComplexAttribute();    // complexAttribute 리스트 가져옴
 
             for (int i = 0; i < attributeBindingList.Count; i++)
             {
                 Attribute attribute = GetAttribute(attributeBindingList[i]);    // attributeBinding의 이름 및 multiplicity정보를 가져옴
 
-                string valueType = simpleAttributeList[i].valueType;            // attribute와 동일한 이름을 갖는 simpleAttribute의 valueType을 가져옴
-                attribute.valueType = ConvertValueType(valueType);              // simpleAttribute의 valueType을 attribute의 valueType으로 설정
+                S100_FC_SimpleAttribute simpleAttribute = simpleAttributeList.Find(x => x.name == attribute.attributeName);
+                attribute.valueType = ConvertValueType(simpleAttribute.valueType);
+
+                string complexTypeName = complexAttributeList.Find(x => x.name == attribute.attributeName + "Type").name;
+                if (complexTypeName != null) attribute.valueType = complexTypeName;
 
                 attributeList.Add(attribute);   // attribute를 리스트에 추가
             }
@@ -108,6 +112,8 @@ namespace XmlToXsd
 
             XmlNodeList attributeBindingList = featureTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
             List<Attribute> attributeList = new List<Attribute>(attributeBindingList.Count);                        // <S100FC:attributeBinding> 개수 크기의 리스트 생성
+
+            List<S100_FC_ComplexAttribute> complexAttributeList = GetS100_FC_ComplexAttribute();    // complexAttribute 리스트 가져옴
 
             foreach (XmlNode attributeBinding in attributeBindingList)
             {
@@ -200,7 +206,6 @@ namespace XmlToXsd
             return complexAttributeList;
         }
     }
-
 
     public struct Attribute
     {

@@ -23,7 +23,7 @@ namespace XmlToXsd
         {
             XmlSchemaElement element = new XmlSchemaElement();
             element.Name = attribute.attributeName;
-            element.SchemaTypeName = new XmlQualifiedName(attribute.valueType, "http://www.w3.org/2001/XMLSchema");
+            element.SchemaTypeName = new XmlQualifiedName(attribute.valueType);
             if(attribute.lower != 1 || attribute.upper != 1)
             {
                 element.MinOccurs = attribute.lower;

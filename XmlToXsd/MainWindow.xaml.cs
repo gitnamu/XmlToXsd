@@ -31,7 +31,7 @@ namespace XmlToXsd
             if (openFileDlg.ShowDialog().GetValueOrDefault())
             {
                 inputFilePathBox.Text = openFileDlg.FileName;
-                this.inputFilePath = openFileDlg.FileName;
+                inputFilePath = openFileDlg.FileName;
             }
         }
 
@@ -43,16 +43,16 @@ namespace XmlToXsd
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                File.WriteAllText(saveFileDialog.FileName,"");
+                File.WriteAllText(saveFileDialog.FileName, "");
                 outputFilePathBox.Text = saveFileDialog.FileName;
-                this.outputFilePath = saveFileDialog.FileName;
+                outputFilePath = saveFileDialog.FileName;
             }
         }
 
         /** 변환하기 버튼 눌렀을 때 동작 **/
         private void ConvertFile(object sender, RoutedEventArgs e)
         {
-            if(inputFilePathBox == null || outputFilePathBox == null)
+            if (inputFilePathBox == null || outputFilePathBox == null)
             {
                 return;
             }
