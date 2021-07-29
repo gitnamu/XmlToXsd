@@ -49,6 +49,11 @@ namespace XmlToXsd
             }
         }
 
+        private void ShowList()
+        {
+
+        }
+
         /** 변환하기 버튼 눌렀을 때 동작 **/
         private void ConvertFile(object sender, RoutedEventArgs e)
         {
@@ -56,6 +61,8 @@ namespace XmlToXsd
             {
                 return;
             }
+
+            ShowList();
 
             Converter converter = new Converter(inputFilePath, outputFilePath);
             bool result = converter.Convert();

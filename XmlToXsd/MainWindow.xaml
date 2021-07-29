@@ -11,9 +11,10 @@
             <ColumnDefinition Width="280*"/>
             <ColumnDefinition Width="519*"/>
         </Grid.ColumnDefinitions>
-        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="380" Margin="5,5,0,0" VerticalAlignment="Top" Width="257">
-            <TextBlock Name="testOutputBox" HorizontalAlignment="Left" Height="174" Margin="29,32,0,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" Width="170"/>
-        </Border>
+        <TreeView>
+            <TreeViewItem Name="simpleAttribute" Header="SimpleAttribute"/>
+            <TreeViewItem Name="complexAttribute" Header="ComplexAttribute"/>
+        </TreeView>
         <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" HorizontalAlignment="Left" Height="76" Margin="20,25,0,0" VerticalAlignment="Top" Width="459">
             <Button Content="파일찾기" Name="inputFileBtn" Click="FindInputFile" HorizontalAlignment="Left" Height="25" Margin="386,0,0,0" VerticalAlignment="Center" Width="62" />
         </Border>
@@ -24,6 +25,5 @@
         <TextBlock Name="outputFilePathBox" Grid.Column="1" HorizontalAlignment="Left" Height="41" Margin="44,0,0,0" Text="출력 경로 : " TextWrapping="Wrap" VerticalAlignment="Center" Width="336"/>
         <Button Content="변환하기" Grid.Column="1" HorizontalAlignment="Left" Height="27" Margin="195,261,0,0" VerticalAlignment="Top" Width="105" Click="ConvertFile"/>
         <ProgressBar Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="20,328,0,0" VerticalAlignment="Top" Width="459"/>
-
     </Grid>
 </Window>
