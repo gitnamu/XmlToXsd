@@ -60,7 +60,7 @@ namespace XmlToXsd
         }
 
         /** <!-- Type --> 에서 사용되는 SimpleType 빌드하는 함수**/
-        public XmlSchemaSimpleType BuildSimpleTypeOfType(string name, string documentation, string restrictionBase, string patternValue)
+        public XmlSchemaSimpleType BuildPatternSimpleType(string name, string documentation, string restrictionBase, string patternValue)
         {
             // simpleType 태그 생성
             XmlSchemaSimpleType simpleType = MakeSimpleTypeTag(name);

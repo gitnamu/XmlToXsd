@@ -25,13 +25,19 @@ namespace XmlToXsd
                 // FileIO 객체 생성
                 FileIO fileIO = new FileIO(inputFilePath, outputFilePath);
 
-                // xml파일 읽기
+                // xml파일 로드
                 XmlDocument inputFile = new XmlDocument();
                 fileIO.LoadIntputFile(inputFile);
 
+                // xml 파일 읽어서 원하는 정보 뽑아내기
+                InputFileReader inputFileReader = new InputFileReader(inputFile);
+
                 // OutputFileBuilder 객체 생성 및 변환 실행
-                OutputFileBuilder outputFileBuilder = new OutputFileBuilder(inputFile);
+                OutputFileBuilder outputFileBuilder = new OutputFileBuilder(inputFileReader);
                 XDocument outputFile = outputFileBuilder.BuildOutputFile();
+
+                // 창에 정보 출력
+
 
                 // 변환한 xsd파일 저장
                 fileIO.SaveOutputFile(outputFile);

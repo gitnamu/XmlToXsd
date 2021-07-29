@@ -17,27 +17,6 @@ namespace XmlToXsd
         private ImportBuilder importBuilder { get; }
         private InputFileReader inputFileReader { get; }
 
-        /** 생성자 **/
-        /** schema 생성 및 ElementBuiler, ComplexTypeBuilder, SimpleTypeBuilder 객체 생성   **/
-        public OutputFileBuilder(XmlDocument inputFile)
-        {
-            // schema 객체 생성 및 namespace 추가
-            schema = new XmlSchema();
-            schema.TargetNamespace = "http://www.iala-aism.org/S-247/gml/1.0";
-            schema.Namespaces.Add("xs", "http://www.w3.org/2001/XMLSchema");
-            schema.Namespaces.Add("S100", "http://www.iho.int/s100gml/1.0");
-            schema.Namespaces.Add("gml", "http://www.opengis.net/gml/3.2");
-            schema.Namespaces.Add("S100EXT", "http://www.iho.int/s100gml/1.0+EXT");
-            schema.Namespaces.Add("ns1", "http://www.iala-aism.org/S-100/profile/s100_gmlProfile");
-
-            // builder들 객체 생성
-            importBuilder = new ImportBuilder();
-            elementBuilder = new ElementBuillder();
-            complexTypeBuilder = new ComplexTypeBuilder();
-            simpleTypeBuilder = new SimpleTypeBuilder();
-            inputFileReader = new InputFileReader(inputFile);
-        }
-
         /** xsd파일 생성 **/
         /** 생성한 스키마를 XDocument로 변환 **/
         private XDocument MatchSchemaToXsd()
@@ -75,7 +54,7 @@ namespace XmlToXsd
             schema.Items.Add(informationComplexType);
 
             // SimpleType ISO639-3 생성
-            XmlSchemaSimpleType simpleType = simpleTypeBuilder.BuildSimpleTypeOfType("ISO639-3", "stub for ISO 639-3 language codes", "xs:string", @"\w{3}");
+            XmlSchemaSimpleType simpleType = simpleTypeBuilder.BuildPatternSimpleType("ISO639-3", "stub for ISO 639-3 language codes", "xs:string", @"\w{3}");
             schema.Items.Add(simpleType);
 
             // complexType GM_Point 생성
@@ -86,7 +65,7 @@ namespace XmlToXsd
         /** <!-- Enumeration(8) --> 부분 **/
         private void BuildEnumerationPart()
         {
-            List<Enumeration> enumerationList = inputFileReader.GetEnumeration();
+            List<Enumeration> enumerationList = inputFileReader.enumeration;
 
             foreach (Enumeration enumeration in enumerationList)
             {
@@ -98,7 +77,7 @@ namespace XmlToXsd
         /** <!-- ComplexAttributeType(13) --> 부분 **/
         private void BuildComplexAttributeTypePart()
         {
-            List<S100_FC_ComplexAttribute> complexAttributeList = inputFileReader.GetS100_FC_ComplexAttribute();
+            List<S100_FC_ComplexAttribute> complexAttributeList = inputFileReader.s100_FC_ComplexAttribute;
             foreach(S100_FC_ComplexAttribute complexAttribute in complexAttributeList)
             {
                 XmlSchemaComplexType complexType = complexTypeBuilder.BuildSequenceComplexType(complexAttribute.name, complexAttribute.documentation, complexAttribute.attribute);
@@ -109,7 +88,7 @@ namespace XmlToXsd
         /** <!-- infomationType (1) --> 부분 **/
         private void BuildInfomationTypePart()
         {
-            S100_FC_InformationType informationType = inputFileReader.GetS100_FC_InformationType();
+            S100_FC_InformationType informationType = inputFileReader.s100_FC_InformationType;
             XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(informationType.name, informationType.documentation, informationType.baseName, informationType.attribute);
             schema.Items.Add(complexType);
         }
@@ -117,14 +96,39 @@ namespace XmlToXsd
         /** <!-- FeatureType (6) --> 부분 **/
         private void BuildFeatureTypePart()
         {
-            S100_FC_FeatureType featureType = inputFileReader.GetS100_FC_FeatureType();
+            S100_FC_FeatureType featureType = inputFileReader.s100_FC_FeatureType;
             XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(featureType.name, featureType.documentation, featureType.baseName, featureType.attribute);
             schema.Items.Add(complexType);
+        }
+
+        /** 생성자 **/
+        /** schema 생성 및 ElementBuiler, ComplexTypeBuilder, SimpleTypeBuilder 객체 생성   **/
+        public OutputFileBuilder(InputFileReader inputFileReader)
+        {
+            // schema 객체 생성 및 namespace 추가
+            schema = new XmlSchema();
+            schema.TargetNamespace = "http://www.iala-aism.org/S-247/gml/1.0";
+            schema.Namespaces.Add("xs", "http://www.w3.org/2001/XMLSchema");
+            schema.Namespaces.Add("S100", "http://www.iho.int/s100gml/1.0");
+            schema.Namespaces.Add("gml", "http://www.opengis.net/gml/3.2");
+            schema.Namespaces.Add("S100EXT", "http://www.iho.int/s100gml/1.0+EXT");
+            schema.Namespaces.Add("ns1", "http://www.iala-aism.org/S-100/profile/s100_gmlProfile");
+
+            // Reader 객체 생성
+            this.inputFileReader = inputFileReader;
+
+            // builder들 객체 생성
+            importBuilder = new ImportBuilder();
+            elementBuilder = new ElementBuillder();
+            complexTypeBuilder = new ComplexTypeBuilder();
+            simpleTypeBuilder = new SimpleTypeBuilder();
         }
 
         /** 전체 output 파일 생성 **/
         public XDocument BuildOutputFile()
         {
+            inputFileReader.ReadInputFile();
+
             BuildFilePart();
             BuildTypePart();
             BuildEnumerationPart();
