@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
@@ -11,6 +12,7 @@ namespace XmlToXsd
     {
         private string inputFilePath { get; set; }
         private string outputFilePath { get; set; }
+        Converter converter;
 
         public MainWindow()
         {
@@ -51,7 +53,19 @@ namespace XmlToXsd
 
         private void ShowList()
         {
-            InputFileReader inputFileReader = new InputFileReader(inputFilePath);
+            List<S100_FC_SimpleAttribute> s100_FC_SimpleAttributeList = converter.s100_FC_SimpleAttribute;
+            simpleAttribute.Items.Add("개수: "+s100_FC_SimpleAttributeList.Count);
+            foreach (S100_FC_SimpleAttribute s100_FC_SimpleAttribute in s100_FC_SimpleAttributeList)
+            {
+                simpleAttribute.Items.Add(s100_FC_SimpleAttribute.name);
+            }
+
+            List<S100_FC_ComplexAttribute> s100_FC_ComplexAttributeList = converter.s100_FC_ComplexAttribute;
+            complexAttribute.Items.Add("개수: " + s100_FC_ComplexAttributeList.Count);
+            foreach (S100_FC_ComplexAttribute s100_FC_ComplexAttribute in s100_FC_ComplexAttributeList)
+            {
+                complexAttribute.Items.Add(s100_FC_ComplexAttribute.name);
+            }
         }
 
         /** 변환하기 버튼 눌렀을 때 동작 **/
@@ -62,10 +76,9 @@ namespace XmlToXsd
                 return;
             }
 
-            ShowList();
-
-            Converter converter = new Converter(inputFilePath, outputFilePath);
+            converter = new Converter(inputFilePath, outputFilePath);
             bool result = converter.Convert();
+            ShowList();
             if (result)
             {
                 MessageBox.Show("정상적으로 변환이 완료되었습니다.");

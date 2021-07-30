@@ -114,7 +114,7 @@ namespace XmlToXsd
             schema.Namespaces.Add("S100EXT", "http://www.iho.int/s100gml/1.0+EXT");
             schema.Namespaces.Add("ns1", "http://www.iala-aism.org/S-100/profile/s100_gmlProfile");
 
-            // Reader 객체 생성
+            // Reader 객체 저장
             this.inputFileReader = inputFileReader;
 
             // builder들 객체 생성
@@ -127,8 +127,6 @@ namespace XmlToXsd
         /** 전체 output 파일 생성 **/
         public XDocument BuildOutputFile()
         {
-            inputFileReader.ReadInputFile();
-
             BuildFilePart();
             BuildTypePart();
             BuildEnumerationPart();
