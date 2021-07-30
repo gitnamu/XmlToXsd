@@ -51,7 +51,7 @@ namespace XmlToXsd
 
         private void ShowList()
         {
-
+            InputFileReader inputFileReader = new InputFileReader(inputFilePath);
         }
 
         /** 변환하기 버튼 눌렀을 때 동작 **/
