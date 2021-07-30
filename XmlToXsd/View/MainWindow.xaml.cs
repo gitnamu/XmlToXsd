@@ -51,8 +51,10 @@ namespace XmlToXsd
             }
         }
 
+        /** 정보 창에 simpleAttribute 및 complexAttribute 표시 **/
         private void ShowList()
         {
+            // simpleAttribute 요소들 xaml에 추가
             List<S100_FC_SimpleAttribute> s100_FC_SimpleAttributeList = converter.s100_FC_SimpleAttribute;
             simpleAttribute.Items.Add("개수: "+s100_FC_SimpleAttributeList.Count);
             foreach (S100_FC_SimpleAttribute s100_FC_SimpleAttribute in s100_FC_SimpleAttributeList)
@@ -60,6 +62,7 @@ namespace XmlToXsd
                 simpleAttribute.Items.Add(s100_FC_SimpleAttribute.name);
             }
 
+            // complexAttribute 요소들 xaml에 추가
             List<S100_FC_ComplexAttribute> s100_FC_ComplexAttributeList = converter.s100_FC_ComplexAttribute;
             complexAttribute.Items.Add("개수: " + s100_FC_ComplexAttributeList.Count);
             foreach (S100_FC_ComplexAttribute s100_FC_ComplexAttribute in s100_FC_ComplexAttributeList)
