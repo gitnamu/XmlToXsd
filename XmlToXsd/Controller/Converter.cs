@@ -10,8 +10,7 @@ namespace XmlToXsd
         /** 파일 경로 설정 **/
         public string inputFilePath { get; set; }    // 입력 받은 xml 파일 경로
         public string outputFilePath { get; set; }   // 바꾼 후 xsd 파일 저장 경로
-        public List<S100_FC_SimpleAttribute> s100_FC_SimpleAttribute { get;set;}
-        public List<S100_FC_ComplexAttribute> s100_FC_ComplexAttribute { get; set; }
+        public InputFileReader inputFileReader;
 
         /** 생성자 **/
         public Converter(string inputFilePath, string outputFilePath)
@@ -33,12 +32,12 @@ namespace XmlToXsd
                 fileIO.LoadIntputFile(inputFile);
 
                 // xml 파일 읽어서 원하는 정보 뽑아내기
-                InputFileReader inputFileReader = new InputFileReader(inputFile);
+                inputFileReader = new InputFileReader(inputFile);
                 inputFileReader.ReadInputFile();
 
                 // 출력할 정보 저장
-                s100_FC_SimpleAttribute = inputFileReader.s100_FC_SimpleAttribute;
-                s100_FC_ComplexAttribute = inputFileReader.s100_FC_ComplexAttribute;
+                inputFileReader.s100_FC_SimpleAttribute = inputFileReader.s100_FC_SimpleAttribute;
+                inputFileReader.s100_FC_ComplexAttribute = inputFileReader.s100_FC_ComplexAttribute;
 
                 // OutputFileBuilder 객체 생성 및 변환 실행
                 OutputFileBuilder outputFileBuilder = new OutputFileBuilder(inputFileReader);

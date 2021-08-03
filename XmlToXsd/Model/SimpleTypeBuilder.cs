@@ -32,6 +32,15 @@ namespace XmlToXsd
             return enumeration;
         }
 
+        private XmlSchemaPatternFacet MakePatternTag(string patternValue)
+        {
+            XmlSchemaPatternFacet pattern = new XmlSchemaPatternFacet();
+            pattern.Value = patternValue;
+
+            return pattern;
+        }
+
+        /** text에서 node array로 변환하는 함수 **/
         private XmlNode[] TextToNodeArray(string text)
         {
             XmlDocument doc = new XmlDocument();
@@ -79,8 +88,7 @@ namespace XmlToXsd
             simpleType.Content = restriction;
 
             // pattern 태그 생성
-            XmlSchemaPatternFacet pattern = new XmlSchemaPatternFacet();
-            pattern.Value = patternValue;
+            XmlSchemaPatternFacet pattern = MakePatternTag(patternValue);
             restriction.Facets.Add(pattern);
 
             return simpleType;

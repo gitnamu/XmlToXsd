@@ -66,6 +66,12 @@ namespace XmlToXsd
             return sequence;
         }
 
+        private XmlSchemaChoice MakeChoiceTag()
+        {
+            XmlSchemaChoice choice = new XmlSchemaChoice();
+            return choice;
+        }
+
         /** 생성자 **/
         public ComplexTypeBuilder()
         {
@@ -122,7 +128,7 @@ namespace XmlToXsd
             XmlSchemaComplexType complexType = MakeComplexTypeTag(name);
 
             // choice 생성
-            XmlSchemaChoice choice = new XmlSchemaChoice();
+            XmlSchemaChoice choice = MakeChoiceTag();
             complexType.Particle = choice;
 
             // element 생성

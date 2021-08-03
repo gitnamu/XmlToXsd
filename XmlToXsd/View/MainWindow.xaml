@@ -12,8 +12,11 @@
             <ColumnDefinition Width="519*"/>
         </Grid.ColumnDefinitions>
         <TreeView>
+
             <TreeViewItem Name="simpleAttribute" Header="SimpleAttribute"/>
             <TreeViewItem Name="complexAttribute" Header="ComplexAttribute"/>
+            <TreeViewItem Name="featureType" Header="FeatureType"/>
+            <TreeViewItem Name="informationType" Header="InformationType"/>
         </TreeView>
         <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" HorizontalAlignment="Left" Height="76" Margin="20,25,0,0" VerticalAlignment="Top" Width="459">
             <Button Content="파일찾기" Name="inputFileBtn" Click="FindInputFile" HorizontalAlignment="Left" Height="25" Margin="386,0,0,0" VerticalAlignment="Center" Width="62" />

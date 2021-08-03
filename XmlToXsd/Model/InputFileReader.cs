@@ -163,7 +163,7 @@ namespace XmlToXsd
         }
 
 
-        /** S100_FC_ComplexAttribute의 enumeration을 읽어서 필요한 정보 반환 **/
+        /** S100_FC_ComplexAttribute 읽어서 필요한 정보 반환 **/
         private List<S100_FC_ComplexAttribute> GetS100_FC_ComplexAttribute()
         {
             List<S100_FC_ComplexAttribute> complexAttributeList = new List<S100_FC_ComplexAttribute>();

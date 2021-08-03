@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace XmlToXsd
 {
@@ -55,19 +56,67 @@ namespace XmlToXsd
         private void ShowList()
         {
             // simpleAttribute 요소들 xaml에 추가
-            List<S100_FC_SimpleAttribute> s100_FC_SimpleAttributeList = converter.s100_FC_SimpleAttribute;
+            List<S100_FC_SimpleAttribute> s100_FC_SimpleAttributeList = converter.inputFileReader.s100_FC_SimpleAttribute;
             simpleAttribute.Items.Add("개수: "+s100_FC_SimpleAttributeList.Count);
             foreach (S100_FC_SimpleAttribute s100_FC_SimpleAttribute in s100_FC_SimpleAttributeList)
             {
-                simpleAttribute.Items.Add(s100_FC_SimpleAttribute.name);
+                var subItem = new TreeViewItem();
+                subItem.Header = s100_FC_SimpleAttribute.name;
+                subItem.Items.Add(s100_FC_SimpleAttribute.valueType);
+                simpleAttribute.Items.Add(subItem);
             }
 
             // complexAttribute 요소들 xaml에 추가
-            List<S100_FC_ComplexAttribute> s100_FC_ComplexAttributeList = converter.s100_FC_ComplexAttribute;
+            List<S100_FC_ComplexAttribute> s100_FC_ComplexAttributeList = converter.inputFileReader.s100_FC_ComplexAttribute;
             complexAttribute.Items.Add("개수: " + s100_FC_ComplexAttributeList.Count);
             foreach (S100_FC_ComplexAttribute s100_FC_ComplexAttribute in s100_FC_ComplexAttributeList)
             {
-                complexAttribute.Items.Add(s100_FC_ComplexAttribute.name);
+                var subItem = new TreeViewItem();
+                subItem.Header = s100_FC_ComplexAttribute.name;
+                foreach(Attribute attribute in s100_FC_ComplexAttribute.attribute)
+                {
+                    var subItem2 = new TreeViewItem();
+                    subItem2.Header = attribute.attributeName;
+                    subItem2.Items.Add("lower: " + attribute.lower);
+                    subItem2.Items.Add("upper: " + attribute.upper);
+                    subItem2.Items.Add("nil: " + attribute.nil);
+                    subItem2.Items.Add("infinite: " + attribute.infinite);
+                    subItem2.Items.Add("valueType: " + attribute.valueType);
+                    subItem.Items.Add(subItem2);
+                }
+                complexAttribute.Items.Add(subItem);
+            }
+
+            // featureType 요소를 xaml에 추가
+            S100_FC_FeatureType s100_FC_FeatureType = converter.inputFileReader.s100_FC_FeatureType;
+            featureType.Items.Add("이름: " + s100_FC_FeatureType.name);
+            featureType.Items.Add("개수: " + s100_FC_FeatureType.attribute.Count);
+            foreach (Attribute attribute in s100_FC_FeatureType.attribute)
+            {
+                var subItem = new TreeViewItem();
+                subItem.Header = attribute.attributeName;
+                subItem.Items.Add("lower: " + attribute.lower);
+                subItem.Items.Add("upper: " + attribute.upper);
+                subItem.Items.Add("nil: " + attribute.nil);
+                subItem.Items.Add("infinite: " + attribute.infinite);
+                subItem.Items.Add("valueType: " + attribute.valueType);
+                featureType.Items.Add(subItem);
+            }
+
+            // informationType 요소를 xaml에 추가
+            S100_FC_InformationType s100_FC_InformationType = converter.inputFileReader.s100_FC_InformationType;
+            informationType.Items.Add("이름: " + s100_FC_InformationType.name);
+            informationType.Items.Add("개수: " + s100_FC_InformationType.attribute.Count);
+            foreach (Attribute attribute in s100_FC_InformationType.attribute)
+            {
+                var subItem = new TreeViewItem();
+                subItem.Header = attribute.attributeName;
+                subItem.Items.Add("lower: " + attribute.lower);
+                subItem.Items.Add("upper: " + attribute.upper);
+                subItem.Items.Add("nil: " + attribute.nil);
+                subItem.Items.Add("infinite: " + attribute.infinite);
+                subItem.Items.Add("valueType: " + attribute.valueType);
+                informationType.Items.Add(subItem);
             }
         }
 
