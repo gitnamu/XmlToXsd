@@ -88,9 +88,13 @@ namespace XmlToXsd
         /** <!-- infomationType (1) --> 부분 **/
         private void BuildInfomationTypePart()
         {
-            S100_FC_InformationType informationType = inputFileReader.s100_FC_InformationType;
-            XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(informationType.name, informationType.documentation, informationType.baseName, informationType.attribute);
-            schema.Items.Add(complexType);
+            List<S100_FC_InformationType> informationTypeList = inputFileReader.s100_FC_InformationType;
+
+            foreach(S100_FC_InformationType informationType in informationTypeList)
+            {
+                XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(informationType.name, informationType.documentation, informationType.baseName, informationType.attribute);
+                schema.Items.Add(complexType);
+            }
         }
 
         /** <!-- FeatureType (6) --> 부분 **/

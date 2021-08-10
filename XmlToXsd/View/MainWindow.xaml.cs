@@ -102,6 +102,7 @@ namespace XmlToXsd
                 var subItem = new TreeViewItem();
                 subItem.Header = s100_FC_FeatureType.name;
                 subItem.Items.Add("개수: " + s100_FC_FeatureType.attribute.Count);
+
                 foreach (Attribute attribute in s100_FC_FeatureType.attribute)
                 {
                     var subItem2 = AddFeature(attribute);
@@ -111,12 +112,19 @@ namespace XmlToXsd
             }
 
             // informationType 요소를 xaml에 추가
-            S100_FC_InformationType s100_FC_InformationType = converter.inputFileReader.s100_FC_InformationType;
-            informationType.Items.Add("이름: " + s100_FC_InformationType.name);
-            informationType.Items.Add("개수: " + s100_FC_InformationType.attribute.Count);
-            foreach (Attribute attribute in s100_FC_InformationType.attribute)
+            List<S100_FC_InformationType> s100_FC_InformationTypeList = converter.inputFileReader.s100_FC_InformationType;
+            informationType.Items.Add("개수: " + s100_FC_InformationTypeList.Count);
+            foreach(S100_FC_InformationType s100_FC_InformationType in s100_FC_InformationTypeList)
             {
-                var subItem = AddFeature(attribute);
+                var subItem = new TreeViewItem();
+                subItem.Header = s100_FC_InformationType.name;
+                subItem.Items.Add("개수: " + s100_FC_InformationType.attribute.Count);
+
+                foreach (Attribute attribute in s100_FC_InformationType.attribute)
+                {
+                    var subItem2 = AddFeature(attribute);
+                    subItem.Items.Add(subItem2);
+                }
                 informationType.Items.Add(subItem);
             }
         }

@@ -12,7 +12,7 @@ namespace XmlToXsd
         public List<Enumeration> enumeration { get; set; }
         public List<S100_FC_SimpleAttribute> s100_FC_SimpleAttribute { get; set; }
         public List<S100_FC_FeatureType> s100_FC_FeatureType { get; set; }
-        public S100_FC_InformationType s100_FC_InformationType { get; set; }
+        public List<S100_FC_InformationType> s100_FC_InformationType { get; set; }
 
 
         /** valueType 반환 **/
@@ -55,34 +55,41 @@ namespace XmlToXsd
         }
 
         /** S100_FC_InformationType 읽어서 필요한 정보 반환 **/
-        private S100_FC_InformationType GetS100_FC_InformationType()
+        private List<S100_FC_InformationType> GetS100_FC_InformationType()
         {
-            S100_FC_InformationType informationType = new S100_FC_InformationType();
-            informationType.documentation = "none";         // documentation은 default가 none
-            informationType.baseName = "InformationType";   // baseName의 default는 InformationType
+            List<S100_FC_InformationType> informationTypeList = new List<S100_FC_InformationType>();
+            XmlNodeList informationTypeNodeList = inputFile.GetElementsByTagName("S100FC:S100_FC_InformationType");
 
-            XmlNodeList informationTypeNode = inputFile.GetElementsByTagName("S100FC:S100_FC_InformationType"); // <S100FC:S100_FC_InformationType> 리스트
-            informationType.name = informationTypeNode[0].SelectSingleNode("S100FC:code", nmspc).InnerText;     // <S100FC:code> innerText를 name으로 설정
-
-            XmlNodeList attributeBindingList = informationTypeNode[0].SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
-
-            List<Attribute> attributeList = new List<Attribute>();    // Attribute 리스트 생성
-
-            for (int i = 0; i < attributeBindingList.Count; i++)
+            foreach(XmlNode informationTypeNode in informationTypeNodeList)
             {
-                Attribute attribute = GetAttribute(attributeBindingList[i]);    // attributeBinding의 이름 및 multiplicity정보를 가져옴
+                S100_FC_InformationType informationType = new S100_FC_InformationType();
+                informationType.documentation = "none";         // documentation은 default가 none
+                informationType.baseName = "InformationType";   // baseName의 default는 InformationType
 
-                S100_FC_SimpleAttribute simpleAttribute = s100_FC_SimpleAttribute.Find(x => x.name == attribute.attributeName);
-                attribute.valueType = ConvertValueType(simpleAttribute.valueType);
+                informationType.name = informationTypeNode.SelectSingleNode("S100FC:code", nmspc).InnerText;     // <S100FC:code> innerText를 name으로 설정
 
-                string complexTypeName = s100_FC_ComplexAttribute.Find(x => x.name == attribute.attributeName + "Type").name;
-                if (complexTypeName != null) attribute.valueType = complexTypeName;
+                XmlNodeList attributeBindingList = informationTypeNode.SelectNodes("S100FC:attributeBinding", nmspc);    // <S100FC:attributeBinding> 리스트
 
-                attributeList.Add(attribute);   // attribute를 리스트에 추가
+                List<Attribute> attributeList = new List<Attribute>();    // Attribute 리스트 생성
+
+                for (int i = 0; i < attributeBindingList.Count; i++)
+                {
+                    Attribute attribute = GetAttribute(attributeBindingList[i]);    // attributeBinding의 이름 및 multiplicity정보를 가져옴
+
+                    S100_FC_SimpleAttribute simpleAttribute = s100_FC_SimpleAttribute.Find(x => x.name == attribute.attributeName);
+                    attribute.valueType = ConvertValueType(simpleAttribute.valueType);
+
+                    string complexTypeName = s100_FC_ComplexAttribute.Find(x => x.name == attribute.attributeName + "Type").name;
+                    if (complexTypeName != null) attribute.valueType = complexTypeName;
+
+                    attributeList.Add(attribute);   // attribute를 리스트에 추가
+                }
+                informationType.attribute = attributeList;  // 구한 attributeList를 informationType의 attribute에 할당
+
+                informationTypeList.Add(informationType);
             }
-            informationType.attribute = attributeList;  // 구한 attributeList를 informationType의 attribute에 할당
 
-            return informationType;
+            return informationTypeList;
         }
 
         /** S100_FC_FeatureType 읽어서 필요한 정보 반환 **/
