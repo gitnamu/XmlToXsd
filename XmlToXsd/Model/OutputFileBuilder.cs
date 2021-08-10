@@ -96,9 +96,12 @@ namespace XmlToXsd
         /** <!-- FeatureType (6) --> 부분 **/
         private void BuildFeatureTypePart()
         {
-            S100_FC_FeatureType featureType = inputFileReader.s100_FC_FeatureType;
-            XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(featureType.name, featureType.documentation, featureType.baseName, featureType.attribute);
-            schema.Items.Add(complexType);
+            List<S100_FC_FeatureType> featureTypeList = inputFileReader.s100_FC_FeatureType;
+            foreach(S100_FC_FeatureType featureType in featureTypeList)
+            {
+                XmlSchemaComplexType complexType = complexTypeBuilder.BuildComplexType(featureType.name, featureType.documentation, featureType.baseName, featureType.attribute);
+                schema.Items.Add(complexType);
+            }
         }
 
         /** 생성자 **/

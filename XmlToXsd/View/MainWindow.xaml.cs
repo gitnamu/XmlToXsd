@@ -52,6 +52,19 @@ namespace XmlToXsd
             }
         }
 
+        private TreeViewItem AddFeature(Attribute attribute)
+        {
+            var subItem = new TreeViewItem();
+            subItem.Header = attribute.attributeName;
+            subItem.Items.Add("lower: " + attribute.lower);
+            subItem.Items.Add("upper: " + attribute.upper);
+            subItem.Items.Add("nil: " + attribute.nil);
+            subItem.Items.Add("infinite: " + attribute.infinite);
+            subItem.Items.Add("valueType: " + attribute.valueType);
+
+            return subItem;
+        }
+
         /** 정보 창에 simpleAttribute 및 complexAttribute 표시 **/
         private void ShowList()
         {
@@ -75,31 +88,25 @@ namespace XmlToXsd
                 subItem.Header = s100_FC_ComplexAttribute.name;
                 foreach(Attribute attribute in s100_FC_ComplexAttribute.attribute)
                 {
-                    var subItem2 = new TreeViewItem();
-                    subItem2.Header = attribute.attributeName;
-                    subItem2.Items.Add("lower: " + attribute.lower);
-                    subItem2.Items.Add("upper: " + attribute.upper);
-                    subItem2.Items.Add("nil: " + attribute.nil);
-                    subItem2.Items.Add("infinite: " + attribute.infinite);
-                    subItem2.Items.Add("valueType: " + attribute.valueType);
+                    var subItem2 = AddFeature(attribute);
                     subItem.Items.Add(subItem2);
                 }
                 complexAttribute.Items.Add(subItem);
             }
 
             // featureType 요소를 xaml에 추가
-            S100_FC_FeatureType s100_FC_FeatureType = converter.inputFileReader.s100_FC_FeatureType;
-            featureType.Items.Add("이름: " + s100_FC_FeatureType.name);
-            featureType.Items.Add("개수: " + s100_FC_FeatureType.attribute.Count);
-            foreach (Attribute attribute in s100_FC_FeatureType.attribute)
+            List<S100_FC_FeatureType> s100_FC_FeatureTypeList = converter.inputFileReader.s100_FC_FeatureType;
+            featureType.Items.Add("개수: " + s100_FC_FeatureTypeList.Count);
+            foreach (S100_FC_FeatureType s100_FC_FeatureType in s100_FC_FeatureTypeList)
             {
                 var subItem = new TreeViewItem();
-                subItem.Header = attribute.attributeName;
-                subItem.Items.Add("lower: " + attribute.lower);
-                subItem.Items.Add("upper: " + attribute.upper);
-                subItem.Items.Add("nil: " + attribute.nil);
-                subItem.Items.Add("infinite: " + attribute.infinite);
-                subItem.Items.Add("valueType: " + attribute.valueType);
+                subItem.Header = s100_FC_FeatureType.name;
+                subItem.Items.Add("개수: " + s100_FC_FeatureType.attribute.Count);
+                foreach (Attribute attribute in s100_FC_FeatureType.attribute)
+                {
+                    var subItem2 = AddFeature(attribute);
+                    subItem.Items.Add(subItem2);
+                }
                 featureType.Items.Add(subItem);
             }
 
@@ -109,13 +116,7 @@ namespace XmlToXsd
             informationType.Items.Add("개수: " + s100_FC_InformationType.attribute.Count);
             foreach (Attribute attribute in s100_FC_InformationType.attribute)
             {
-                var subItem = new TreeViewItem();
-                subItem.Header = attribute.attributeName;
-                subItem.Items.Add("lower: " + attribute.lower);
-                subItem.Items.Add("upper: " + attribute.upper);
-                subItem.Items.Add("nil: " + attribute.nil);
-                subItem.Items.Add("infinite: " + attribute.infinite);
-                subItem.Items.Add("valueType: " + attribute.valueType);
+                var subItem = AddFeature(attribute);
                 informationType.Items.Add(subItem);
             }
         }
